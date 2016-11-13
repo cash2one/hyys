@@ -13,15 +13,46 @@ def add_divided_by_cybercitizen(data_frame, cybercitizen_frame):
     return data_avg_frame
 
 
-def add_standardized(data_frame, column_name, new_column_name):
-    standardized = data_frame[column_name].groupby([data_frame['level3'],data_frame['keyword']]).apply(lambda x:x/np.max(x))
+def std_array(x):
+    avg = x.mean()
+    std = x.std(ddof=0)
+    if std == 0:
+        return x*0+0.6
+    else:
+        return ((x-avg)/std)*(0.4/3)+0.6
+
+
+def add_standardized(data_frame, column_name, new_column_name, std_method=None, std_param1=None):
+    if std_method == 'mean_var':
+        # 六级计算方法
+        # standardized = data_frame[column_name].groupby([data_frame['level3'], data_frame['keyword']])\
+        #     .apply(lambda x: ((x-x.mean())/x.std())*7/71+50/71)
+        standardized = data_frame[column_name].groupby([data_frame['level3'], data_frame['keyword']])\
+            .apply(std_array)
+        standardized[standardized > 1] = 1
+        standardized[standardized < 0] = 0
+        # 3/7 for 0.7, 7/13 for 0.65, 2/3 for 0.6
+        # standardized = data_frame[column_name].groupby([data_frame['level3'], data_frame['keyword']])\
+        #     .apply(lambda x: 1/(1+np.exp(-(x-x.mean())/x.std()+np.log(7/13))))
+        # standardized = data_frame[column_name].groupby([data_frame['level3'], data_frame['keyword']])\
+        #     .apply(lambda x: (x-x.mean())/x.std())
+    elif std_method == 'ln':
+        standardized = data_frame[column_name].groupby([data_frame['level3'], data_frame['keyword']])\
+            .apply(lambda x: np.log(x+1)/np.log(x.max()+1))
+    elif std_method == 'n_max':
+        standardized = data_frame[column_name].groupby([data_frame['level3'], data_frame['keyword']])\
+            .apply(lambda x: x/np.partition(x, std_param1)[std_param1])
+        standardized[standardized > 1] = 1
+    else:
+        standardized = data_frame[column_name].groupby([data_frame['level3'], data_frame['keyword']])\
+            .apply(lambda x: x/np.max(x))
     standardized.name = new_column_name
     data_frame = pd.concat([data_frame, standardized], axis=1)
     return data_frame
 
 
 def add_weight_score(data_frame):
-    weight_score = 0.5*data_frame['score_std']+0.5*data_frame['score_avg_std']
+    weight_score = 0.3*data_frame['score_std']+0.7*data_frame['score_avg_std']
     weight_score.name = 'score_weight'
     data_frame = pd.concat([data_frame, weight_score], axis=1)
     return data_frame
@@ -32,8 +63,8 @@ def standardized(file_path):
     # add average data
     data = add_divided_by_cybercitizen(data, cybercitizen)
     # standardized
-    data = add_standardized(data, 'score', 'score_std')
-    data = add_standardized(data, 'score_avg', 'score_avg_std')
+    data = add_standardized(data, 'score', 'score_std', std_method='mean_var')
+    data = add_standardized(data, 'score_avg', 'score_avg_std', std_method='mean_var')
     data = add_weight_score(data)
     return data
 
@@ -45,3 +76,10 @@ if __name__ == '__main__':
     cybercitizen = pd.read_excel(cybercitizen_file_path)
     data = standardized(data_file_path)
     data.to_csv('news_comment_cnts_standardized.csv', encoding='GBK')
+
+    data_mean = data.groupby([data['level3'], data['area']]).mean()
+    data_mean.reset_index(level=['level3', 'area'], inplace=True)
+    data_mean.sort_values(['order', 'area'], inplace=True)
+    data_mean.to_csv('news_comment_cnts_standardized_mean.csv',
+                     columns=['order', 'level3', 'area', 'score', 'population',
+                              'score_avg', 'score_std', 'score_avg_std', 'score_weight'])

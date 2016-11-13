@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # 微博评论存放目录
     comment_dir = 'E:/hyys_data/weibo/comments'
     # 微博评论统计结果保存路径
-    weibo_comment_cnt_file = 'E:/hyys_data/weibo/weibo_comment_cnt.csv'
+    weibo_comment_cnt_file = 'E:/hyys_data/weibo/weibo_comment_cnts.csv'
 
     keyword_to_mids = get_keyword_to_mids(mids_file)
     with open(weibo_comment_cnt_file, mode='w', encoding='GBK', newline='') as output_csv:
@@ -61,10 +61,9 @@ if __name__ == '__main__':
         for level1 in index.get_level1():
             for level2 in index.get_level2_by_level1(level1):
                 for level3 in index.get_level3_by_level2(level2):
+                    print(level3)
                     level3_cnt += 1
                     for keyword in index.get_keywords_by_level3(level3):
-                        if keyword not in keyword_to_mids:
-                            continue
                         cnt_map = {}
                         for mid in keyword_to_mids.get(keyword, []):
                             region_cnt_map = get_comment_region(comment_dir+'/'+mid)
@@ -72,7 +71,3 @@ if __name__ == '__main__':
                                 cnt_map[province] = cnt_map.get(province, 0) + cnt
                         for province in provinces:
                             writer.writerow((level3_cnt, level3, province, keyword, cnt_map.get(province, 0)))
-
-            #         break
-            #     break
-            # break

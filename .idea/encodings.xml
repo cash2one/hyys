@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/pku/hyys/compute_index/index_compute.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/compute_index/merge_standardized_data.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/compute_index/standardized.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/crawler/news_crawler.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/crawler/weibo_comments_crawler.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/crawler/weibo_crawler.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/data_preprocess/baidu_index_preprocess.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/data_preprocess/news_comments_preprocess.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/data_preprocess/weibo_comments_preprocess.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/statis/news_statis.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/util/constant_data.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/util/index.csv" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pku/hyys/util/index.py" charset="UTF-8" />
+  </component>
+</project>

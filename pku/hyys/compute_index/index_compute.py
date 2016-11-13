@@ -9,7 +9,7 @@ from pandas import ExcelWriter
 
 
 def compute_index_score(data_frame, weight_frame, score_column):
-    data_frame = pd.merge(weight_frame, data_frame[score_column].groupby([data_frame['area'], data_frame['level3']]).mean().reset_index(), on='level3')
+    data_frame = pd.merge(weight_frame, data_frame[['level3','area',score_column]], on='level3')
     data_frame = pd.concat([data_frame, data_frame[score_column]*data_frame['level3_weight']], axis=1)
     data_frame = data_frame.rename(columns={0: 'new_score'})
     return data_frame
@@ -34,9 +34,9 @@ if __name__ == '__main__':
     data_all = pd.read_csv(data_file_path, encoding='GBK')
 
     # compute index basically
-    index_total = compute_index_one_time(data_all, 'score_std')
-    index_avg = compute_index_one_time(data_all, 'score_avg_std')
-    index_weight = compute_index_one_time(data_all, 'score_weight')
+    # index_total = compute_index_one_time(data_all, 'score_std')
+    # index_avg = compute_index_one_time(data_all, 'score_avg_std')
+    # index_weight = compute_index_one_time(data_all, 'score_weight')
 
     # compute index with the weight file
     score_data_level3 = compute_index_score(data_all, weight, 'score_std')

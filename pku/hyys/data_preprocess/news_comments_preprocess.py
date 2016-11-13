@@ -56,10 +56,9 @@ if __name__ == '__main__':
         for level1 in index.get_level1():
             for level2 in index.get_level2_by_level1(level1):
                 for level3 in index.get_level3_by_level2(level2):
+                    print(level3)
                     level3_cnt += 1
                     for keyword in index.get_keywords_by_level3(level3):
                         cnt_map = get_comment_region(data_dir+'/'+keyword+'/news/comments/most_comments')
-                        if len(cnt_map) == 0:
-                            continue
                         for province in provinces:
                             writer.writerow((level3_cnt, level3, province, keyword, cnt_map.get(province, 0)))
